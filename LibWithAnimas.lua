@@ -714,7 +714,7 @@ function lib.newToggle(name, block, callback)
 		end,
 	}
 
-	container.Toggle.Activated:Connect(function()
+	container.Button.Activated:Connect(function()
 		lib.Buttons[name].ToggleFunction()
 	end)
 
