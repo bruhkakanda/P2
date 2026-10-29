@@ -341,7 +341,7 @@ function lib.load()
 
 	local function tweenAway()
 		local main = lib.CreatedUI.Main.Container.Loading
-		TweenService:Create(main.Loading, TweenInfo.new(0.5), {ImageTransparency = 1}):Play()
+		TweenService:Create(main.Loading.Loading, TweenInfo.new(0.5), {ImageTransparency = 1}):Play()
 		TweenService:Create(main.Logo, TweenInfo.new(0.5), {ImageTransparency = 1}):Play()
 	end
 
@@ -355,15 +355,15 @@ function lib.load()
 	end
 
 	local isCurrentlyLoading = true 
-	TweenService:Create(
-		lib.CreatedUI.Main.Container.Loading.Loading,
-		TweenInfo.new(2, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1),
-		{Rotation = 359}
-	):Play()
+
+    local spinnerLoader = lib.CreatedUI.Main.Container.Loading.Loading:Clone()
+    spinnerLoader.Parent = lib.CreatedUI.Main.Container.Loading.Loading
+    spinnerLoader.Size = UDim2.fromScale(1,1)
+    lib.CreatedUI.Main.Container.Loading.Loading.ImageTransparency = 1
 
 	local spinCon
 	spinCon = RunService.RenderStepped:Connect(function(deltaTime)
-		lib.CreatedUI.Main.Container.Loading.Loading.Rotation += 90 * deltaTime
+		spinnerLoader.Rotation += 90 * deltaTime
 	end)
 
 	setTitle("[GET] Check %PatchKids% Folder...", Color3.fromRGB(255,255,255))
@@ -619,7 +619,6 @@ function lib.newButton(name, block, keybind, callback)
 				end
 			end)
 
-			-- Keep the label in sync if the side button is removed another way (e.g. its own 'x')
 			local original = lib.removeSideButton
 			lib.removeSideButton = function(removedName, ...)
 				original(removedName, ...)
@@ -684,6 +683,7 @@ function lib.newToggle(name, block, callback)
 	button.Name = name
 	button.Title.Text = name
 	button.Toggle.Visible = true
+    button.Button.Visible = true
 	button.Parent = lib.CreatedUI.Main.Container.Pages[blockData.Page][block]
 
 	lib.alphaFeature(button, name)
@@ -717,6 +717,8 @@ function lib.newToggle(name, block, callback)
 	container.Toggle.Activated:Connect(function()
 		lib.Buttons[name].ToggleFunction()
 	end)
+
+    lib.addBloomEffect(container.Button)
 end
 
 function lib.newSlider(name, block, max, min, def, callback)
